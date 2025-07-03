@@ -1,40 +1,21 @@
-pipeline{
-    agent none 
-    
-    stages{
-        stage("backend build"){
-            agent{
-                docker{
-                    image "maven:3.8.1-adoptopenjdk-11"
-                    args "-u root"
-                }
-            }
-            steps{
-                echo "building java backend"
-                sh "mvn clean install"
-            }
-        }
-        stage("frontend build"){
-            agent{
-                docker{
-                    image "node:16-alpine"
-                    args "-u root"
-                }
-            }
-            steps{
-                echo "building node frontend"
-                sh "npm install"
-                sh "npm run build"
-                
-            }
-        }
+pipeline {
+  agent none
+  stages {
+    stage('Back-end') {
+      agent {
+        docker { image 'maven:3.8.1-adoptopenjdk-11' }
+      }
+      steps {
+        sh 'mvn --version'
+      }
     }
-    post{
-        success{
-            echo "build completed sucessfully"
-        }
-        failure{
-            echo "build failed check the logs above"
-        }
+    stage('Front-end') {
+      agent {
+        docker { image 'node:16-alpine' }
+      }
+      steps {
+        sh 'node --version'
+      }
     }
+  }
 }
